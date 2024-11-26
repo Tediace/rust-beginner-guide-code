@@ -3,3 +3,4 @@
 </div>
 
 # Rust Sample with Code Explanation
+This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
