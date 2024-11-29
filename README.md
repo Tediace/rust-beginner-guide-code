@@ -9,6 +9,11 @@ Every value in Rust is of certain *data type*, which tells Rust what kind of dat
 Rust is *statically types* language, which means that it must know the types of all variables at compile time. The compiler can usually infer what type we want to used based on the value and how we use it.
 
 ### Different Type Annotations for other data types
+<details>
+  <summary>1) Scaler Types </summary>
+  <br>
+  test
+</details>
 * Scaler Types
   * Integer Types
   * Floating-Point Types
