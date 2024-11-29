@@ -14,6 +14,14 @@ Rust is *statically types* language, which means that it must know the types of 
   <br>
   test
 </details>
+
+<details>
+  <summary>2) Compound Types </summary>
+  <br>
+  test
+</details>
+
+
 * Scaler Types
   * Integer Types
   * Floating-Point Types
