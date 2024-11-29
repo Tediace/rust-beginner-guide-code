@@ -10,11 +10,14 @@ Rust is *statically types* language, which means that it must know the types of 
 
 ### Different Type Annotations for other data types
 * Scaler Types
-* Integer Types
-* Floating-Point Types
-* Numeric Operations
-* The Boolean Type
-* The Character Type
+  * Integer Types
+  * Floating-Point Types
+  * Numeric Operations
+  * The Boolean Type
+  * The Character Type
 * Compound Types
+  * The Tuple Type
+  * The Array Type
+     
 
 This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
