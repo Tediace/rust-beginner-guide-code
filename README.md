@@ -12,7 +12,7 @@ Rust is *statically types* language, which means that it must know the types of 
 <details>
   <summary>1) Scaler Types </summary>
   <br>
-  * Integer Types
+  **Integer Types**
   * Floating-Point Types
   * Numeric Operations
   * The Boolean Type
