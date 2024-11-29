@@ -13,7 +13,9 @@ Rust is *statically types* language, which means that it must know the types of 
   <summary>1) Scaler Types </summary>
   
   - **Integer Types**
-    
+    An *integer* is a number without a fractional component.
+    ![image](https://github.com/user-attachments/assets/7eb12391-3e57-4041-80a0-2ad310acd7e5)
+
 ```rust
   fn main() {
        let x = 2.0; // f64
