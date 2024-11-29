@@ -12,25 +12,18 @@ Rust is *statically types* language, which means that it must know the types of 
 <details>
   <summary>1) Scaler Types </summary>
   <br>
-  test
-</details>
-
-<details>
-  <summary>2) Compound Types </summary>
-  <br>
-  test
-</details>
-
-
-* Scaler Types
   * Integer Types
   * Floating-Point Types
   * Numeric Operations
   * The Boolean Type
   * The Character Type
-* Compound Types
-  * The Tuple Type
-  * The Array Type
-     
+</details>
 
+<details>
+  <summary>2) Compound Types </summary>
+  <br>
+ * The Tuple Type
+  * The Array Type
+</details>
+     
 This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
