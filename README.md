@@ -14,7 +14,7 @@ Rust is *statically types* language, which means that it must know the types of 
   
   - **Integer Types**
     
-    ```rust
+```rust
   fn main() {
        let x = 2.0; // f64
        let y: f32 = 3.0; // f32
