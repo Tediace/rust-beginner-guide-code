@@ -11,7 +11,7 @@ Rust is *statically types* language, which means that it must know the types of 
 ### Different Type Annotations for other data types
 <details>
   <summary>1) Scaler Types </summary>
-  <br>
+  
   - **Integer Types**
   - **Floating-Point Types**
   - **Numeric Operations**
