@@ -13,8 +13,13 @@ Rust is *statically types* language, which means that it must know the types of 
   <summary>1) Scaler Types </summary>
   
   - **Integer Types**
-    An *integer* is a number without a fractional component.
+    An *integer* is a number without a fractional component. 
+    
     ![image](https://github.com/user-attachments/assets/7eb12391-3e57-4041-80a0-2ad310acd7e5)
+    
+    Each variant can be either signed or unsigned and has an explicit size.
+
+    ![image](https://github.com/user-attachments/assets/0588b9e2-2e4e-402e-a940-04a82f1eea5c)
 
 ```rust
   fn main() {
