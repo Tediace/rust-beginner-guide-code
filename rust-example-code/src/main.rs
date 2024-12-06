@@ -33,4 +33,17 @@ fn main() {
     // 3
     functions::another_function(5, 't');
     // The measurement is: 5 and t
+    functions::statements_expressions();
+
+    let x = plus_one(4);
+    println!("the value of x is {}", x);
+}
+// Function with return value
+// Function can return values to the code that calls them
+// We don't name return values, but we must declare their type after an arrow(->)
+// In Rust, the return value of the function is synonymous with the value of the final expression
+// You can return function by using the return keyword, but
+// Most function return the last expression implicitly
+fn plus_one(x: i32) -> i32 {
+    x + 1
 }
