@@ -13,6 +13,7 @@ Rust is *statically types* language, which means that it must know the types of 
   <summary>1) Scaler Types </summary>
   
   - **Integer Types**
+
     An *integer* is a number without a fractional component. 
     
     ![image](https://github.com/user-attachments/assets/7eb12391-3e57-4041-80a0-2ad310acd7e5)
@@ -28,6 +29,7 @@ Rust is *statically types* language, which means that it must know the types of 
   }
   ```
   - **Floating-Point Types**
+
     Rust's floatin-point type are *f32* and *f64*, which are 32 bits and 64 bits in size, respectively. The default type is *f64* on modern CPUs.
 ```rust
   fn main() {
@@ -38,7 +40,8 @@ Rust is *statically types* language, which means that it must know the types of 
  Floating-point numbers are represented according to the IEEE-754 standard. The f32 type is
  a single-precision float, and f64 has double precision.
   - **Numeric Operations**
-    Rust supports the basic mathematical operations you’d expect for all the number types:
+
+     Rust supports the basic mathematical operations you’d expect for all the number types:
  addition, subtraction, multiplication, division, and remainder. Integer division truncates
  toward zero to the nearest integer.
 ```rust
@@ -57,6 +60,7 @@ Rust is *statically types* language, which means that it must know the types of 
  }
 ```
   - **The Boolean Type**
+
     As in most other programming languages, a Boolean type in Rust has two possible values: *tru* and *false* With one byte in size.
 ```rust
 fn main() {
@@ -65,7 +69,8 @@ fn main() {
  }
 ```
   - **The Character Type**
-    Rust's *char* type sis the language's most primitive alphabetic type.
+
+     Rust's *char* type sis the language's most primitive alphabetic type.
 ```rust
 fn main() {
  let c = 'z';
