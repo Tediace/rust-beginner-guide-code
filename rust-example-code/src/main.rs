@@ -1,3 +1,5 @@
+mod functions;
+
 fn main() {
     // VARIABLE AND MUTABILITY
     // every variable in rust is immutable by default
@@ -29,5 +31,6 @@ fn main() {
     let spaces = spaces.len();
     println!("the spaces is {}", spaces);
     // 3
-
+    functions::another_function(5, 't');
+    // The measurement is: 5 and t
 }
