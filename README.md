@@ -28,9 +28,56 @@ Rust is *statically types* language, which means that it must know the types of 
   }
   ```
   - **Floating-Point Types**
+    Rust's floatin-point type are *f32* and *f64*, which are 32 bits and 64 bits in size, respectively. The default type is *f64* on modern CPUs.
+```rust
+  fn main() {
+ let x = 2.0; // f64
+ let y: f32 = 3.0; // f32
+ }
+ ```
+ Floating-point numbers are represented according to the IEEE-754 standard. The f32 type is
+ a single-precision float, and f64 has double precision.
   - **Numeric Operations**
+    Rust supports the basic mathematical operations you’d expect for all the number types:
+ addition, subtraction, multiplication, division, and remainder. Integer division truncates
+ toward zero to the nearest integer.
+```rust
+ fn main() {
+ // addition
+ let sum = 5 + 10;
+ // subtraction
+ let difference = 95.5 - 4.3;
+ // multiplication
+ let product = 4 * 30;
+ // division
+ let quotient = 56.7 / 32.2;
+ let truncated = -5 / 3; // Results in -1
+ // remainder
+ let remainder = 43 % 5;
+ }
+```
   - **The Boolean Type**
+    As in most other programming languages, a Boolean type in Rust has two possible values: *tru* and *false* With one byte in size.
+```rust
+fn main() {
+ let t = true;
+ let f: bool = false; // with explicit type annotation
+ }
+```
   - **The Character Type**
+    Rust's *char* type sis the language's most primitive alphabetic type.
+```rust
+fn main() {
+ let c = 'z';
+ let z: char = 'ℤ'; // with explicit type annotation
+ let heart_eyed_cat = '�
+ ��
+ ��
+ ��
+ �';
+ }
+```
+Rust's *char* type is four bytes in size and represents a Unicode Scalar Value, Which mean it can represent a lot more than just ASCII.
 </details>
 
 <details>
