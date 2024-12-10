@@ -220,6 +220,7 @@ But you'll more often see them used in this format.
  }
 ```
 ![image](https://github.com/user-attachments/assets/89fbd73c-e352-439b-bf72-b88be69e2214)
+source: https://doc.rust-lang.org/book/appendix-02-operators.html
 
 
 This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
