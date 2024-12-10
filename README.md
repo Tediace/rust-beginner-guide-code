@@ -196,5 +196,28 @@ The program resulted in a *runtime* error at the point of using invalid in the i
 
 This is an example of Rust's memory safety principles in action. In many low-level languages, this kind of check is not done, and when you provide an incorrect index, invalid memory can be accessed. Rust protects you againts this kind of error immediately exiting instead of allowing the memory access and continuing.
 </details>
-     
+
+## Comments
+
+In Rust, comment style starts a comment with two slashes //.
+
+Here's simple comment:
+
+```rust
+// hello, world
+```
+Comments can also be places at the end of lines containing code:
+```rust
+ fn main() {
+ let lucky_number = 7; // I’m feeling lucky today
+ }
+```
+But you'll more often see them used in this format.
+```rust
+ fn main() {
+ // I’m feeling lucky today
+ let lucky_number = 7;
+ }
+```
+
 This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
