@@ -219,8 +219,12 @@ But you'll more often see them used in this format.
     let lucky_number = 7;
  }
 ```
-![image](https://github.com/user-attachments/assets/89fbd73c-e352-439b-bf72-b88be69e2214)
-source: https://doc.rust-lang.org/book/appendix-02-operators.html
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/89fbd73c-e352-439b-bf72-b88be69e2214" alt="Rust Operators">
+</p>
+
+Source: [Rust Operators](https://doc.rust-lang.org/book/appendix-02-operators.html)
+
 
 
 This Rust code and explanation get reference from https://github.com/rust-lang/book/tree/main/src
