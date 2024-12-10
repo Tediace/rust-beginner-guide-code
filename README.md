@@ -219,6 +219,7 @@ But you'll more often see them used in this format.
     let lucky_number = 7;
  }
 ```
+### Shows symbols that create comments
 <p align="center">
   <img src="https://github.com/user-attachments/assets/89fbd73c-e352-439b-bf72-b88be69e2214" alt="Rust Operators">
 </p>
