@@ -223,7 +223,7 @@ But you'll more often see them used in this format.
   <img src="https://github.com/user-attachments/assets/89fbd73c-e352-439b-bf72-b88be69e2214" alt="Rust Operators">
 </p>
 
-Source: [Rust Operators](https://doc.rust-lang.org/book/appendix-02-operators.html)
+Source: [Rust Comments](https://doc.rust-lang.org/book/appendix-02-operators.html)
 
 
 
