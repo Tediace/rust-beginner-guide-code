@@ -209,14 +209,14 @@ Here's simple comment:
 Comments can also be places at the end of lines containing code:
 ```rust
  fn main() {
- let lucky_number = 7; // I’m feeling lucky today
+    let lucky_number = 7; // I’m feeling lucky today
  }
 ```
 But you'll more often see them used in this format.
 ```rust
  fn main() {
- // I’m feeling lucky today
- let lucky_number = 7;
+    // I’m feeling lucky today
+    let lucky_number = 7;
  }
 ```
 
