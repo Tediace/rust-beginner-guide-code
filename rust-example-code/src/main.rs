@@ -1,5 +1,6 @@
 mod functions;
 mod control_flow;
+mod loops;
 
 fn main() {
     // VARIABLE AND MUTABILITY
@@ -41,6 +42,8 @@ fn main() {
     // the value of x is 5
 
     control_flow::if_expression();
+
+    loops::repetition();
 }
 // Function with return value
 // Function can return values to the code that calls them
