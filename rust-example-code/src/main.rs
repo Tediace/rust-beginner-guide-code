@@ -1,4 +1,5 @@
 mod functions;
+mod control_flow;
 
 fn main() {
     // VARIABLE AND MUTABILITY
@@ -37,6 +38,9 @@ fn main() {
 
     let x = plus_one(4);
     println!("the value of x is {}", x);
+    // the value of x is 5
+
+    control_flow::if_expression();
 }
 // Function with return value
 // Function can return values to the code that calls them
