@@ -118,21 +118,21 @@ made up of three parts, shown on the left: a pointer to the memory that holds th
 of the string, a length, and a capacity. This group of data is stored on the stack. On the right
 is the memory on the heap that holds the contents.
 
-![img.png](img.png)
+![img.png](img/img.png)
 *Representation in memory of a String holding the value "hello" bound to s1*
 
 When we assign s1 to s2 , the String data is copied, meaning we copy the pointer, the
 length, and the capacity that are on the stack. We do not copy the data on the heap that the
 pointer refers to. 
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 *Representation in memory of the variable s2 that has a copy of the pointer, length, and capacity of
 s1*
 
 Rust instead copied the heap data as well. If Rust did this, the operation s2 = s1 could be
 very expensive in terms of runtime performance if the data on the heap were large.
 
-![img_2.png](img_2.png)
+![img_2.png](img/img_2.png)
 *Another possibility for what s2 = s1 might do if Rust copied the heap data as well*
 
 This is a problem: when s2 and s1 go out of scope,
@@ -152,7 +152,7 @@ what happens when you try to use s1 after s2 is created; it won’t work:
 ```
 But because Rust also invalidates the first variable,
 instead of being called a shallow copy, it’s known as a move. 
-![img_3.png](img_3.png)
+![img_3.png](img/img_3.png)
 *Representation in memory after s1 has been invalidated*
 
 That solves our problem! With only s2 valid, when it goes out of scope it alone will free the
@@ -197,7 +197,7 @@ Here are some of the types that implement *Copy* :
 The mechanics of passing a value to a function are similar to those when assigning a value to a variable. Passing a
 variable to a function will move or copy, just as assignment does.
 
-![img_4.png](img_4.png)
+![img_4.png](img/img_4.png)
 *Functions with ownership and scope annotate*
 
 If we tried to use s after the call to takes_ownership , Rust would throw a compile-time
@@ -208,7 +208,7 @@ doing so.
 #### Return Values and Scope
 Returning values can also transfer ownership.
 
-![img_5.png](img_5.png)
+![img_5.png](img/img_5.png)
 *Transferring ownership of return values*
 
 In Rust, assigning a value to another variable transfers ownership, and when a variable with heap data goes out of 
