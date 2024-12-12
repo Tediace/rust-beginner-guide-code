@@ -47,7 +47,9 @@ fn main() {
     loops::repetition();
 
     // ownership
-    module1::ownership::own();
+    module1::ownership::ownership_function();
+    module1::ownership::value_scope();
+    module1::ownership::string_length();
 }
 // Function with return value
 // Function can return values to the code that calls them
