@@ -1,6 +1,7 @@
 mod functions;
 mod control_flow;
 mod loops;
+mod module1;
 
 fn main() {
     // VARIABLE AND MUTABILITY
@@ -44,6 +45,9 @@ fn main() {
     control_flow::if_expression();
 
     loops::repetition();
+
+    // ownership
+    module1::ownership::own();
 }
 // Function with return value
 // Function can return values to the code that calls them
