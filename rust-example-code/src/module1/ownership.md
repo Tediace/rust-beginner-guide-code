@@ -239,3 +239,203 @@ Rust does let us return multiple values using a tuple.
 But this is to much ceremony and a lot of work for a concept that should be common.
 Luckily for us, Rust has a feature for using a value without transferring ownership, called *references*.
 
+### References and Borrowing
+
+A reference is like a pointer in that it's an address we can follow to access the data stored at that address (data is
+owned by some other variable). Unlike a pointer, a reference is guaranteed to point to a valid value of particular type
+for the life of that reference.
+
+Example using reference with function *calculate_length*:
+
+```rust
+fn main(){
+    let s1 =  String::from("hello");
+
+    let len = calculate_length(&s1);
+
+    println!("The length of '{}' is {}.", s1, len); 
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
+```
+First, notice that all the tuple code in the variable declaration and the function return value is
+gone. Second, note that we pass &s1 into calculate_length and, in its definition, we take
+&String rather than String . These ampersands represent references, and they allow you
+to refer to some value without taking ownership of it.
+
+![img.png](img.png)
+
+*A diagram of &String s pointing at string s1*
+
+Note: The opposite of referencing by using & is dereferencing, which is accomplished
+with the dereference operator, * .
+
+```rust
+  let s1 = String::from("hello");
+
+  let len = calculate_length(&s1);
+```
+The &s1 syntax lets us create a reference that refers to the value of s1 but does not own it.
+Because it does not own it, the value it points to will not be dropped when the reference
+stops being used.
+
+Likewise, the signature of the function uses & to indicate that the type of the parameter s
+is a reference. Let’s add some explanatory annotations:
+
+```rust
+  fn calculate_length(s: &String) -> usize { // s is a reference to a String
+  s.len()
+  } // Here, s goes out of scope. But because it does not have ownership of what
+    // it refers to, it is not dropped.
+```
+The variable s by reference is not dropped, because s doesn't have ownership. When functions have references as
+parameters instead of the actual values, we won't need to return the values in order to give back ownership,
+because we never had ownership.
+
+Example in real life of reference borrowing, if a person owns something, you can borrow it from them. When you're done,
+you have to give it back. You don't own it.
+
+What happens if we try to modify something we're borrowing?
+```rust
+// Attempting to modify a  borrowed valid
+fn main() {
+    let s = String::from("hello");
+    change(&s);
+}
+fn change(some_string: &String) {
+    some_string.push_str(", world");
+}
+```
+Here's the error"
+```text
+$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+ error[E0596]: cannot borrow `*some_string` as mutable, as it is behind a `&` 
+reference
+ --> src/main.rs:8:5
+   |
+ 7 | fn change(some_string: &String) {
+   |                        ------- help: consider changing this to be a mutable 
+reference: `&mut String`
+ 8 |     some_string.push_str(", world");
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `some_string` is a `&` reference, so 
+the data it refers to cannot be borrowed as mutable
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `ownership` due to previous error
+```
+Just as variables are immutable by default, so are references. We're not allowed to modify something we have a
+reference to.
+
+#### Mutable References
+
+We can fix the code with modify value from borrowed with mutable references.
+
+```rust
+fn main() {
+    let mut s = String::from("hello");
+    change(&mut s);
+}
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
+```
+First we change s to be mut. Then we create a mutable reference with *&mut* s where we call the change function, and
+update the function signature to accept a mutable reference with *some_string: &mut String*. This makes it very clear
+that the *change* function will mutate the value it borrows.
+
+Keep in mind, if you have a mutable reference to a value, you can have no other references to that value. 
+
+Example create two mutable references to s will fail:
+```rust
+let mut s = String::from("hello");
+let r1 = &mut s;
+let r2 = &mut s;
+println!("{}, {}", r1, r2);
+```
+Here's the error:
+```text
+$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+ error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --> src/main.rs:5:14
+   |
+ 4 |     let r1 = &mut s;
+   |              ------ first mutable borrow occurs here
+ 5 |     let r2 = &mut s;
+   |              ^^^^^^ second mutable borrow occurs here
+ 6 |
+ 7 |     println!("{}, {}", r1, r2);
+   |                        -- first borrow later used here
+ For more information about this error, try `rustc --explain E0499`.
+ error: could not compile `ownership` due to previous error
+```
+
+This error says that this code is invalid because we cannot borrow s as mutable more than once at a time.
+The restriction on multiple mutable references enforces controlled mutation by allowing only one mutable
+reference at a time. In Rust's you not allowed to have multiple mutable reference, in other language you can mutate
+whenever you'd like. The benefit of having this restriction is that Rust can prevent data races at compile time. A data
+race is similar to a race condition and happens when these three behaviors occur:
+
+- Two or more pointers access the same data at the same time.
+- At least one of the pointers is being used to write to the data.
+- There’s no mechanism being used to synchronize access to the data.
+
+Data races cause undefined behavior and can be difficult to diagnose and fix when you're trying to track them down at
+runtime; Rust prevents this problem by refusing to compile code with data races!
+
+Example for allowing multiple mutable references.
+```rust
+ let mut s = String::from("hello");
+{
+ let r1 = &mut s;
+} // r1 goes out of scope here, so we can make a new reference with no problems.
+ let r2 = &mut s;
+```
+Rust enforces s similar rule for combining mutable and immutable references. This code results in an error:
+```rust
+ let mut s = String::from("hello");
+ let r1 = &s; // no problem
+ let r2 = &s; // no problem
+ let r3 = &mut s; // BIG PROBLEM
+ println!("{}, {}, and {}", r1, r2, r3);
+```
+Here's the error:
+```text
+ $ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+ error[E0502]: cannot borrow `s` as mutable because it is also borrowed as 
+immutable
+ --> src/main.rs:6:14
+   |
+ 4 |     let r1 = &s; // no problem
+   |              -- immutable borrow occurs here
+ 5 |     let r2 = &s; // no problem
+ 6 |     let r3 = &mut s; // BIG PROBLEM
+   |              ^^^^^^ mutable borrow occurs here
+ 7 |
+ 8 |     println!("{}, {}, and {}", r1, r2, r3);
+   |                                -- immutable borrow later used here
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` due to previous error
+```
+We also cannot have mutable references while we have an immutable one to the same value.
+Immutable references allow safe, simultaneous access for reading since the data cannot change unexpectedly.
+
+A reference's scope runs from its introduction to its last use. The code compiles because the immutable references are 
+used up before the mutable reference is introduced.
+
+```rust
+let mut s = String::from("hello");
+let r1 = &s; // no problem
+let r2 = &s; // no problem
+println!("{} and {}", r1, r2);
+// variables r1 and r2 will not be used after this point
+let r3 = &mut s; // no problem
+println!("{}", r3);
+```
+The immutable references' scopes end before the mutable reference begins, avoiding overlap and allowing the code. 
+Rust’s borrowing rules prevent bugs by catching issues at compile time, saving debugging effort later.
+
+#### Dangling References
