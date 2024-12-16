@@ -81,7 +81,7 @@ In most languages like C and C++ without GC, it's our responsibility to identify
 call code to explicitly free it.
 
 Rust take a different path: the memory is automatically return once the variable that owns it goes out of scope.
-Here's a example using string instead of s string literal:
+Here's an example using string instead of s string literal:
 ```rust
     let s = String::from("hello"); // s is valid from this point forward
     // do stuff with s
@@ -236,7 +236,7 @@ Rust does let us return multiple values using a tuple.
           let length = s.len(); // len() returns the length of a String (s, length)
      }  
 ```
-But this is to much ceremony and a lot of work for a concept that should be common.
+But this is too much ceremony and a lot of work for a concept that should be common.
 Luckily for us, Rust has a feature for using a value without transferring ownership, called *references*.
 
 ### References and Borrowing
@@ -265,7 +265,7 @@ gone. Second, note that we pass &s1 into calculate_length and, in its definition
 &String rather than String . These ampersands represent references, and they allow you
 to refer to some value without taking ownership of it.
 
-![img.png](img.png)
+![img.png](img/img_6.png)
 
 *A diagram of &String s pointing at string s1*
 
@@ -439,3 +439,267 @@ The immutable references' scopes end before the mutable reference begins, avoidi
 Rust’s borrowing rules prevent bugs by catching issues at compile time, saving debugging effort later.
 
 #### Dangling References
+
+
+In Rust, the compiler ensures references are never dangling by guaranteeing that data remains valid as long as a 
+reference to it exists. This prevents errors common in pointer-based languages, where freeing memory while retaining 
+a pointer can lead to issues.
+
+```rust
+ fn main() {
+     let reference_to_nothing = dangle();
+ }
+ fn dangle() -> &String { // dangle returns a reference to a string
+     let s = String::from("hello"); // s is a new String
+   
+     &s // we return a reference to the String,
+ } // Here, s goes out of scope, and is dropped. Its memory goes away. Danger!
+```
+Here's the error:
+```text
+$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+ error[E0106]: missing lifetime specifier
+ --> src/main.rs:5:16
+   |
+ 5 | fn dangle() -> &String {
+   |                ^ expected named lifetime parameter
+   |
+  = help: this function's return type contains a borrowed value, but there is 
+no value for it to be borrowed from
+ help: consider using the `'static` lifetime
+   |
+ 5 | fn dangle() -> &'static String {
+   |                 +++++++
+ For more information about this error, try `rustc --explain
+```
+Because s is created inside *dangle*, when the code of *dangle* is finished, s will be deallocated. But we tried to
+return a reference to it. That means this reference would be pointing to an invalid *String*. Rust won't let us do this.
+
+The solution here is to return the *String* directly.
+```rust
+fn no_dangle() -> String {
+    let s = String::from("hello");
+       
+    s
+ }
+```
+Here, ownership of *s* is given to the function call, so there are no dangling references.
+
+##### The Rules of References
+- At any given time, you can have *either* one mutable reference *or* any number of immutable references.
+- References must always be valid.
+
+### The Slice Type
+*Slice* let you reference a contiguous sequence of elements in a collection rather than the whole collection.
+A slice is kind of reference, so it does not have ownership.
+
+Here’s a small programming problem: write a function that takes a string of words separated
+by spaces and returns the first word it finds in that string. If the function doesn’t find a space
+in the string, the whole string must be one word, so the entire string should be returned.
+
+
+```rust
+ fn main() {
+     let mut s = String::from("hello world");
+     let word = first_word(&s); // word will get the value 5
+     s.clear(); // this empties the String, making it equal to ""
+  
+     // word still has the value 5 here, but there's no more string that
+     // we could meaningfully use the value 5 with. word is now totally invalid!
+ }
+```
+```rust
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() { 
+      if item == b' ' {
+          return i;
+      }
+    }
+  s.len()
+}
+```
+This program compiles without any errors and would also do so if we used *word* after calling *s.clear(). Because *word*
+isn't connected to the state of s at all, *word* still contains the value *5*. We cloud use that *5* with the
+variable *s* to try to extract the first word out, but this would be a bug because the contents of *s* have changed
+since we saved *5* in *word*.
+
+#### String Slice
+A *string slice* is a reference to part of a *String*, and it looks like this:
+```rust
+ let s = String::from("hello world");
+ let hello = &s[0..5];
+ let world = &s[6..11];
+```
+
+A slice in Rust is a reference to a portion of a String, defined by a range [starting_index..ending_index], where
+starting_index is inclusive and ending_index is exclusive. Internally, a slice stores the starting position and its 
+length (end - start). For example, let world = &s[6..11]; creates a slice starting at index 6 with a length of 5.
+
+![img_1.png](img/img_7.png)
+
+*String slice referring to part of a String*
+
+With Rust's .. range syntax, if you want to star at index 0, you can drop the value before the two period. In other
+words, these are equal:
+```rust
+ let s = String::from("hello");
+ let slice = &s[0..2];
+ let slice = &s[..2];
+```
+By the same token, if your slice includes the last byte of the *String*, you can drop the trailing number. That means
+these are equal:
+```rust
+let s = String::from("hello");
+
+let len = s.len();
+
+let slice = &s[3..len];
+let slice = &s[3..];
+```
+Entire string. So These are equal:
+```rust
+let s = String::from("hello");
+
+let len = s.len();
+ 
+let slice = &s[0..len];
+let slice = &s[..];
+```
+
+```text
+Note: String slice range indices must occur at valid UTF-8 character boundaries. If you
+attempt to create a string slice in the middle of a multibyte character, your program
+will exit with an error. 
+```
+Let's rewrite *first_word* to return a slice. The type that signifies *"string slice"* is written as *&str*:
+```rust
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+  
+    &s[..]
+ }
+```
+Now when we call first_word , we get back a single value that is tied to the underlying data.
+The value is made up of a reference to the starting point of the slice and the number of
+elements in the slice.
+
+Returning a slice would also work for a *second_word* function:
+```rust
+fn second_word(s: &String) -> &str {
+  
+}
+```
+
+The problems would show up later if we kept trying to use the first word index with an empties string. Slices make this
+bug impossible and let us know we have a problem without code much sooner. Using the slice version of *first_word* will
+throw a compile-time error:
+```rust
+ fn main() {
+     let mut s = String::from("hello world");
+     let word = first_word(&s);
+     s.clear(); // error!
+    
+     println!("the first word is: {}", word);
+ }
+```
+Here's the compiler error:
+```text
+$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+ error[E0502]: cannot borrow `s` as mutable because it is also borrowed as 
+immutable
+  --> src/main.rs:18:5
+    |
+ 16 |     let word = first_word(&s);
+    |                           -- immutable borrow occurs here
+ 17 |
+ 18 |     s.clear(); // error!
+    |     ^^^^^^^^^ mutable borrow occurs here
+ 19 |
+ 20 |     println!("the first word is: {}", word);
+    |                                       ---- immutable borrow later used here
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` due to previous error
+```
+
+Rust's borrowing rules prevent having a mutable reference and an immutable reference to the same data at the same time. 
+Since clear requires a mutable reference to truncate the String, and the println! uses an immutable reference (word), 
+Rust disallows this overlap, causing a compile-time error. This ensures safety and eliminates a class of runtime errors.
+
+#### String Literals as Slices
+String literals being stored inside the binary.
+```rust
+let s = "Hello, world!";
+```
+The type of *s* here is *&str* : it's a slice pointing to that specific point of the binary. This is also why
+string literal are immutable; *&str* is an immutable reference.
+
+#### String Slices as Parameters
+Knowing that you can take slices of literals and *String* values leads us to one more improvement on *first_word*.
+```rust
+fn firts_word(s: &str) -> &str {
+  
+}
+```
+A more experienced Rustacean would write the signature shown in Listing 4-9 instead
+because it allows us to use the same function on both &String values and &str values.
+```rust
+ // : Improving the first_word function by using a string slice for the type of the s parameter
+ fn first_word(s: &str) -> &str { 
+  
+}
+```
+If we have a string slice, we can pass that directly. If we have a *String*, we can pass a slice of the String or a
+reference to the *String*
+
+Defining a function to take a string slice instead of a reference to a *String* makes our API more general and useful
+without losing any functionality.
+```rust
+fn main() {
+    let my_string = String::from("hello world");
+    // `first_word` works on slices of `String`s, whether partial or whole
+    let word = first_word(&my_string[0..6]);
+    let word = first_word(&my_string[..]);
+    // `first_word` also works on references to `String`s, which are equivalent
+    // to whole slices of `String`s
+    let word = first_word(&my_string);
+    let my_string_literal = "hello world";
+    // `first_word` works on slices of string literals, whether partial or whole
+    let word = first_word(&my_string_literal[0..6]);
+    let word = first_word(&my_string_literal[..]);
+    // Because string literals *are* string slices already,
+    // this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+ }
+```
+
+#### Other Slices
+String slices there's more general slice type too.
+```rust
+let a = [1, 2, 3, 4, 5];
+```
+Just as we might want to refer to part of a string, we might want to refer to part of and array.
+We'd do so like this:
+```rust
+let a = [1, 2, 3, 4, 5];
+let slice = &a[1..3];
+assert_eq!(slice, &[2, 3]);
+```
+The slice has the type *&[i32]. It works the same way as string slices do, by storing a reference to the first element
+and a length. You'll use this kind of slice for all sorts of other collections.
+
+### Summary
+The concepts of ownership, borrowing, and slices unsure memory safety in Rust programs at compile time. The Rust
+language gives you control over your memory usage in the same way as other systems programming languages, but having the
+owner of data automatically clean up that data when the owner goes out of scope means you don't have to write and debug
+extra code to get this control.
+
+Ownership affects how lots of other part of Rust work, so we'll talk about these concepts further throughout the rest of
+the book.
