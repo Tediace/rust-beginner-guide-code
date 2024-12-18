@@ -1,2 +1,2 @@
 pub mod ownership;
-mod borrowing;
+pub mod borrowing;

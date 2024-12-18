@@ -2,6 +2,7 @@ mod functions;
 mod control_flow;
 mod loops;
 mod module1;
+mod module2;
 
 fn main() {
     // VARIABLE AND MUTABILITY
@@ -50,6 +51,10 @@ fn main() {
     module1::ownership::ownership_function();
     module1::ownership::value_scope();
     module1::ownership::string_length();
+    module1::borrowing::references_borrowing();
+
+    // struct
+    module2::structs::structs_data();
 }
 // Function with return value
 // Function can return values to the code that calls them
