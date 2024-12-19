@@ -170,7 +170,7 @@ struct User {
  fn main() {
     let user1 = User {
         active: true,
-        username: "someusername123",
+        username: "someone123",
         email: "someone@example.com",
         sign_in_count: 1,
     };
@@ -374,6 +374,196 @@ In this case:
 This macro is especially useful for understanding how your code behaves during execution.
 
 ### Method Syntax
+Methods in Rust are like functions but are defined within a struct, enum, or trait. Their first parameter is always 
+self, representing the instance they are called on. They can have parameters, return values, and execute code just like 
+functions.
+
+#### Defining Methods
+```rust
+// defining an area method on the rectangle struct
+ #[derive(Debug)]
+ struct Rectangle {
+    width: u32,
+    height: u32,
+ }
+ impl Rectangle {
+ fn area(&self) -> u32 {
+     self.width * self.height
+    }
+ }
+ fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+ }
+```
+To define the function within the context of **Rectangle**, we star an **imp** (implementation) block fo **Rectangle**.
+In **main**, where we called the **area* function and passed **rect1** as an argument, we can instead use
+*method syntax* to call the **area** method on out **Rectangle** instance.
+
+In a method signature, &self is shorthand for self: &Self, where Self refers to the type the impl block is for. 
+The & indicates the method borrows the instance immutably, similar to &Rectangle. Methods can also take ownership of 
+self or borrow it mutably, depending on the desired behavior.
+
+The method uses &self to borrow the instance immutably, allowing read-only access without taking ownership, similar to 
+&Rectangle in the function version. Use &mut self when the method needs to modify the instance, and self 
+(taking ownership) is rare, typically used for transforming the instance and preventing further use of the original.
+
+The main reason for using methods instead of functions, in addition to providing method syntax and not having repeat the
+type of **self** in every method's. Note that we can choose to give a method the same name as one of the struct fields.
+
+Example define method on **Rectangle** that is also named **width**:
+```rust
+impl Rectangle {
+    fn width(&self) -> bool {
+        self.width > 0
+    }
+ }
+ fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width);
+    }
+ }
+```
+
+A method can share the same name as a struct field but serve a different purpose. For example, a width method can 
+return true if the width field is greater than 0. In main, using rect1.width without parentheses refers to the field, 
+while with parentheses (rect1.width()) it refers to the method.
+
+Getters—methods that simply return a field's value—are common for read-only access. Unlike some languages, Rust does 
+not auto-generate getters, but you can make fields private and provide public getters to control access through the 
+struct API.
+
+#### Where's the -> Operator?
+In C and C++, two different operators are used for calling methods: you use . if you’re
+calling a method on the object directly and -> if you’re calling the method on a pointer
+to the object and need to dereference the pointer first. In other words, if object is a
+pointer, object->something() is similar to (*object).something() 
+
+Rust doesn’t have an equivalent to the -> operator; instead, Rust has a feature called
+*automatic referencing and dereferencing*. Calling methods is one of the few places in Rust
+that has this behavior.
+
+Here’s how it works: when you call a method with object.something() , Rust
+automatically adds in & , &mut , or * so object matches the signature of the method.
+In other words, the following are the same:
+
+```rust
+p1.distance(&p2);
+(&p1).distance(&p2);
+```
+The first one looks much cleaner. This automatic referencing behavior works because
+methods have a clear receiver—the type of self . Given the receiver and name of a
+method, Rust can figure out definitively whether the method is reading ( &self ),
+mutating ( &mut self ), or consuming ( self ). The fact that Rust makes borrowing
+implicit for method receivers is a big part of making ownership ergonomic in practice.
+
+#### Methods with More Parameters
+This time we want an instance of Rectangle to take another instance of Rectangle and
+return true if the second Rectangle can fit completely within self (the first Rectangle );
+otherwise, it should return false.
+
+```rust
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+     println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+}
+```
+The expected output would look like the following because both dimensions of **rect2** are smaller than the dimension of
+**rect1**, but **rect3** is wider than **rect1**:
+
+```text
+Can rect1 hold rect2? true
+Can rect1 hold rect3? false
+```
+The can_hold method is defined within the impl Rectangle block. It takes an immutable borrow of another Rectangle as a 
+parameter, allowing read-only access without taking ownership, so the caller can reuse the parameter. The method returns
+a Boolean, checking if self's width and height are greater than the other Rectangle's width and height, respectively.
+
+```rust
+// Implementing the can_hold method on rectangle that takes another rectangle instance as parameter
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+ }
+```
+#### Associated Functions
+All functions defined within an **impl** block are called *associated functions* because they're associated with the
+type named after the **impl**. Associated functions, often used as constructors, create new instances of a struct. While
+commonly named new, this is not mandatory. For example, an associated function like square can take one parameter and 
+use it for both width and height to simplify creating square Rectangle instances.
+
+```rust
+impl Rectangle {
+    fn square(size: u32) -> Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+}
+```
+The **self** keyword in the return type and in the body of the function are aliases for the type that appears after the
+**impl** keyword, which in this case is **Rectangle**.
+
+To call this associated function use syntax :: with the struct name; **let sq = Rectangle::square(3);** is an example.
+This function is namespaced by the struct: the **::** syntax is used for both associated functions and namespaces
+created by modules.
+
+#### Multiple impl Blocks
+Each struct is allowed to have multiple **impl** blocks. For example each method its own **impl** block.
+```rust
+// rewriting using multiple impl blocks
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+```
+There's reason to separate these methods into multiple **impl** blocks, but this ia valid syntax.
+
+### Summary
+Structs let you create custom types that are meaningful for your domain. By using structs,
+you can keep associated pieces of data connected to each other and name each piece to
+make your code clear. In impl blocks, you can define functions that are associated with
+your type, and methods are a kind of associated function that let you specify the behavior
+that instances of your structs have.
+
+But structs aren’t the only way you can create custom types: let’s turn to Rust’s enum feature
+to add another tool to your toolbox.
+
+
+
 
 
 
