@@ -211,6 +211,174 @@ The compiler will complain that it needs lifetime specifiers:
 For now, we'll fix errors like these using owned types like *String* instead of references like *&str*.
 
 ### An Example Program Using Structs
+Calculating the area of a rectangle specified by separate width and height variables.
+```rust
+ fn main() {
+     let width1 = 30;
+     let height1 = 50;
+    
+     println!(
+        "The area of the rectangle is {} square pixels.",
+        area(width1, height1)
+    );
+ }
+ fn area(width: u32, height: u32) -> u32 {
+     width * height
+ }
+```
+Run program using *cargo*:
+```text
+$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target/debug/rectangles`
+ The area of the rectangle is 1500 square pixels.
+```
+#### Refactoring with Tuples
+```rust
+//  Specifying the width and height of the rectangle with a tuple
+fn main() {
+    let rect1 = (30, 50);
+    println!(
+    "The area of the rectangle is {} square pixels.",
+        area(rect1)
+    );
+ }
+ fn area(dimensions: (u32, u32)) -> u32 {
+     dimensions.0 * dimensions.1
+ }
+```
+In one way, this program is better. Tuples let us add a bit of structure, and we’re now
+passing just one argument. But in another way, this version is less clear: tuples don’t name
+their elements, so we have to index into the parts of the tuple, making our calculation less
+obvious.
+
+#### Refactoring with Structs: Adding More Meaning
+We can transform the tuple we're using into a struct with a name for the whole as well as names for the parts.
+```rust
+// defining a rectangle struct
+struct Rectangle {
+    width: u32,
+    height: u32,
+ }
+ fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    println!(
+    "The area of the rectangle is {} square pixels.",
+        area(&rect1)
+    );
+ }
+ fn area(rectangle: &Rectangle) -> u32 {
+    rectangle.width * rectangle.height
+ }
+```
+Our function signature for area now says exactly
+what we mean: calculate the area of Rectangle , using its width and height fields. This
+conveys that the width and height are related to each other, and it gives descriptive names
+to the values rather than using the tuple index values of 0 and 1 . This is a win for clarity.
+
+#### Adding Useful Functionality with Derived Traits
+It'd be useful to be able to print an instance of *Rectangle* while we're debugging our program and see the values for
+all its fields.
+
+```rust
+// Attempting to print a rectangle instance
+ struct Rectangle {
+    width: u32,
+    height: u32,
+ }
+ fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+ println!("rect1 is {}", rect1);
+ }
+```
+This code will compile with error message:
+```text
+error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
+= help: the trait `std::fmt::Display` is not implemented for `Rectangle`
+= note: in format strings you may be able to use `{:?}` (or {:#?} for 
+pretty-print) instead
+```
+Putting the specifier **:?** inside the curly brackets tells **println!** we want to use an output format called
+**Debug**. The **Debug** trait enables us to print out struct in a wat that is useful for developers. But, we still
+get an error:
+```text
+error[E0277]: `Rectangle` doesn't implement `Debug`
+= help: the trait `Debug` is not implemented for `Rectangle`
+= note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
+```
+We need add the outer attribute **#[drive(Debug)]** just before the struct definition.
+```rust
+//  Adding the attribute to derive the Debug trait and printing the Rectangle instance using debug formatting
+#[derive(Debug)]
+ struct Rectangle {
+    width: u32,
+    height: u32,
+ }
+ fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    println!("rect1 is {:?}", rect1);
+ }
+```
+The result:
+```text
+$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+ rect1 is Rectangle { width: 30, height: 50 }
+```
+Another way to print out a value using the **Debug** format is to use the **dgb! macro**.
+```rust
+ #[derive(Debug)]
+ struct Rectangle {
+    width: u32,
+    height: u32,
+ }
+ fn main() {
+     let scale = 2;
+     let rect1 = Rectangle {
+         width: dbg!(30 * scale),
+         height: 50,
+    };
+     
+    dbg!(&rect1);
+ }
+```
+The result:
+```text
+$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/rectangles`
+ [src/main.rs:10] 30 * scale = 60
+ [src/main.rs:14] &rect1 = Rectangle {
+    width: 60,
+    height: 50,
+ }
+```
+The dbg! macro helps debug code by printing the value of an expression and its location in the source file. 
+In this case:
+- The first dbg! call outputs the result of 30 * scale (value: 60), formatted as a simple integer.
+- The second dbg! call outputs &rect1, using pretty Debug formatting for the Rectangle struct.
+
+This macro is especially useful for understanding how your code behaves during execution.
+
+### Method Syntax
+
+
+
+
+
 
 
 
