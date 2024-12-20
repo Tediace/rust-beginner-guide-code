@@ -55,6 +55,10 @@ fn main() {
 
     // struct
     module2::structs::structs_data();
+    module2::structs::refactoring_tuples();
+    module2::structs::refactored_structs();
+    module2::structs::derived_traits();
+    module2::structs::derived_impls();
 }
 // Function with return value
 // Function can return values to the code that calls them
