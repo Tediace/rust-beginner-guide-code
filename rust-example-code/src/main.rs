@@ -59,6 +59,9 @@ fn main() {
     module2::structs::refactored_structs();
     module2::structs::derived_traits();
     module2::structs::derived_impls();
+    module2::methods::methods();
+    module2::methods::methods2();
+    module2::methods::methods3();
 }
 // Function with return value
 // Function can return values to the code that calls them
