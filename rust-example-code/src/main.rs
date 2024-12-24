@@ -3,6 +3,7 @@ mod control_flow;
 mod loops;
 mod module1;
 mod module2;
+mod module3;
 
 fn main() {
     // VARIABLE AND MUTABILITY
@@ -62,6 +63,9 @@ fn main() {
     module2::methods::methods();
     module2::methods::methods2();
     module2::methods::methods3();
+
+    // enum
+    module3::enums::pattern_matching();
 }
 // Function with return value
 // Function can return values to the code that calls them
