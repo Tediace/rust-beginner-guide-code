@@ -66,6 +66,10 @@ fn main() {
 
     // enum
     module3::enums::pattern_matching();
+    module3::enums::pattern_matching_options();
+    let value = module3::enums::value_in_cents(module3::enums::Coin::Penny);
+    module3::enums::catch_patterns();
+    module3::enums::control_flow();
 }
 // Function with return value
 // Function can return values to the code that calls them
